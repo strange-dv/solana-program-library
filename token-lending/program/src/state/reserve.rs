@@ -1,7 +1,7 @@
 use super::*;
 use crate::{
     error::LendingError,
-    math::{Decimal, Rate, TryAdd, TryDiv, TryMul, TrySub},
+    math::{Decimal, Rate, TryAdd, TryDiv, TryMul, TrySub, SCALE},
 };
 use arrayref::{array_mut_ref, array_ref, array_refs, mut_array_refs};
 use solana_program::{
@@ -15,6 +15,7 @@ use solana_program::{
 use std::{
     cmp::Ordering,
     convert::{TryFrom, TryInto},
+    fmt,
 };
 
 /// Percentage of an obligation that can be repaid during each liquidation call
@@ -586,6 +587,19 @@ impl CollateralExchangeRate {
 impl From<CollateralExchangeRate> for Rate {
     fn from(exchange_rate: CollateralExchangeRate) -> Self {
         exchange_rate.0
+    }
+}
+
+impl fmt::Display for CollateralExchangeRate {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut scaled_val = self.0.to_string();
+        if scaled_val.len() <= SCALE {
+            scaled_val.insert_str(0, &vec!["0"; SCALE - scaled_val.len()].join(""));
+            scaled_val.insert_str(0, "0.");
+        } else {
+            scaled_val.insert(scaled_val.len() - SCALE, '.');
+        }
+        f.write_str(&scaled_val)
     }
 }
 
