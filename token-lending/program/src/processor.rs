@@ -1814,8 +1814,8 @@ fn process_liquidate_obligation_and_redeem_reserve_collateral(
     let lending_market_info = next_account_info(account_info_iter)?;
     let lending_market_authority_info = next_account_info(account_info_iter)?;
     let user_transfer_authority_info = next_account_info(account_info_iter)?;
-    let clock = &Clock::from_account_info(next_account_info(account_info_iter)?)?;
     let token_program_id = next_account_info(account_info_iter)?;
+    let clock = &Clock::get()?;
 
     let withdraw_collateral_amount = _liquidate_obligation(
         program_id,

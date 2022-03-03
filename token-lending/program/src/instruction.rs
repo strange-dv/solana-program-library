@@ -403,8 +403,7 @@ pub enum LendingInstruction {
     ///   11 `[]` Lending market account.
     ///   12 `[]` Derived lending market authority.
     ///   13 `[signer]` User transfer authority ($authority).
-    ///   14 `[]` Clock sysvar.
-    ///   15 `[]` Token program id.
+    ///   14 `[]` Token program id.
     LiquidateObligationAndRedeemReserveCollateral {
         /// Amount of liquidity to repay - u64::MAX for up to 100% of borrowed amount
         liquidity_amount: u64,
@@ -1301,7 +1300,6 @@ pub fn liquidate_obligation_and_redeem_reserve_collateral(
             AccountMeta::new_readonly(lending_market_pubkey, false),
             AccountMeta::new_readonly(lending_market_authority_pubkey, false),
             AccountMeta::new_readonly(user_transfer_authority_pubkey, true),
-            AccountMeta::new_readonly(sysvar::clock::id(), false),
             AccountMeta::new_readonly(spl_token::id(), false),
         ],
         data: LendingInstruction::LiquidateObligationAndRedeemReserveCollateral {

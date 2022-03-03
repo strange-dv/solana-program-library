@@ -297,7 +297,7 @@ impl Reserve {
         })
     }
 
-    /// Calculate protocol cut of liquidation bonus
+    /// Calculate protocol cut of liquidation bonus always at least 1 lamport
     pub fn calculate_protocol_liquidation_fee(
         &self,
         amount_liquidated: u64,
@@ -308,8 +308,8 @@ impl Reserve {
         let bonus = amount_liquidated_wads.try_sub(amount_liquidated_wads.try_div(bonus_rate)?)?;
 
         // After deploying must update all reserves to set liquidation fee then redeploy with this line instead of hardcode
-        // let protocol_fee = bonus.try_mul(Rate::from_percent(self.config.protocol_liquidation_fee))?.try_ceil_u64()?;
-        let protocol_fee = bonus.try_mul(Rate::from_percent(30))?.try_ceil_u64()?;
+        // let protocol_fee = max(bonus.try_mul(Rate::from_percent(self.config.protocol_liquidation_fee))?.try_ceil_u64()?, 1);
+        let protocol_fee = std::cmp::max(bonus.try_mul(Rate::from_percent(30))?.try_ceil_u64()?, 1);
         Ok(protocol_fee)
     }
 }
